@@ -154,7 +154,7 @@ class ContractContract(models.Model):
             ).write(vals)
             self._modification_mail_send()
         else:
-            res = super(ContractContract, self).write(vals)
+            res = super().write(vals)
         return res
 
     @api.model
@@ -196,7 +196,7 @@ class ContractContract(models.Model):
 
     def _compute_access_url(self):
         for record in self:
-            record.access_url = "/my/contracts/{}".format(record.id)
+            record.access_url = f"/my/contracts/{record.id}"
 
     def action_preview(self):
         """Invoked when 'Preview' button in contract form view is clicked."""
@@ -316,10 +316,10 @@ class ContractContract(models.Model):
     def _compute_recurring_next_date(self):
         for contract in self:
             recurring_next_date = contract.contract_line_ids.filtered(
-                lambda l: (
-                    l.recurring_next_date
-                    and not l.is_canceled
-                    and (not l.display_type or l.is_recurring_note)
+                lambda r: (
+                    r.recurring_next_date
+                    and not r.is_canceled
+                    and (not r.display_type or r.is_recurring_note)
                 )
             ).mapped("recurring_next_date")
             # we give priority to computation from date_start if modified
@@ -670,7 +670,7 @@ class ContractContract(models.Model):
         # Invoice by companies, so assignation emails get correct context
         for company in companies:
             contracts_to_invoice = contracts.filtered(
-                lambda c: c.company_id == company
+                lambda c, company=company: c.company_id == company
                 and (not c.date_end or c.recurring_next_date <= c.date_end)
             ).with_company(company)
             _recurring_create_func(contracts_to_invoice, date_ref)
