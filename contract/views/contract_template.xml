@@ -12,6 +12,7 @@
                 <group name="group_main">
                     <group name="group_main_left">
                         <field name="contract_type" />
+                        <field name="company_id" invisible="1"/>
                         <field name="journal_id" />
                         <field name="pricelist_id" />
                         <field
@@ -48,11 +49,11 @@
                             <field name="uom_id" />
                             <field
                                 name="automatic_price"
-                                attrs="{'column_invisible': [('parent.contract_type','=','purchase')]}"
+                                column_invisible="parent.contract_type=='purchase'"
                             />
                             <field
                                 name="price_unit"
-                                attrs="{'readonly': [('automatic_price', '=', True)]}"
+                                readonly="automatic_price"
                             />
                             <field name="specific_price" invisible="1" />
                             <field name="discount" groups="base.group_no_one" />
